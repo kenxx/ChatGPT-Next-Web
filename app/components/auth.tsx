@@ -10,15 +10,11 @@ import BotIcon from "../icons/bot.svg";
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
 import { useLarkAuthorize } from "./lark";
-import Router from "next/router";
 
 export function AuthPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
-  const url = useLarkAuthorize([
-    "contact:user.employee:readonly",
-    "contact:user.employee_id:readonly",
-  ]);
+  const url = useLarkAuthorize(["contact:user.base:readonly"]);
 
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
@@ -90,7 +86,7 @@ export function AuthPage() {
         <IconButton
           text={"Lark"}
           onClick={() => {
-            Router.push(url);
+            window.location.href = url.toString();
           }}
         />
       </div>
