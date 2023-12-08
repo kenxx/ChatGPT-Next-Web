@@ -11,6 +11,8 @@ const en: LocaleType = {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
       : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+    AccessCodeExpired:
+      'Access code might be expired. Please Login again in <a href="/auth?login=1">Auth</a> page.',
   },
   Auth: {
     Title: "Need Access Code",

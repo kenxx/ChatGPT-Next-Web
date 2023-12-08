@@ -44,17 +44,10 @@ export async function auth(req: NextRequest) {
     (await getRedis().exists(`access_code:${accessCode}`)) == 1;
 
   if (!hasAccessCodeInRedis) {
-    console.log(hasAccessCodeInRedis);
-    if (
-      serverConfig.needCode &&
-      !serverConfig.codes.has(hashedCode) &&
-      !apiKey
-    ) {
-      return {
-        error: true,
-        msg: !accessCode ? "empty access code" : "wrong access code",
-      };
-    }
+    return {
+      error: true,
+      msg: "wrong access code",
+    };
   }
 
   if (serverConfig.hideUserApiKey && !!apiKey) {

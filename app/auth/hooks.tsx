@@ -21,6 +21,7 @@ export function useLarkAuthorize(
   }, [scope, state]);
 
   const code = searchParams.get("code");
+  const login = searchParams.get("login");
   const authorized = accessStore.isAuthorized();
 
   const updateCode = useCallback(() => {
@@ -36,13 +37,13 @@ export function useLarkAuthorize(
       if (autoRedirect) {
         redirect("/");
       }
-    } else if (!authorized) {
+    } else if (!authorized || login) {
       console.log("go url", url.toString());
       if (autoRedirect) {
         redirect(url.toString());
       }
     }
-  }, [code, authorized, url, autoRedirect, updateCode]);
+  }, [code, authorized, url, login, autoRedirect, updateCode]);
 
   return { url, authorized: code ? true : authorized, code };
 }

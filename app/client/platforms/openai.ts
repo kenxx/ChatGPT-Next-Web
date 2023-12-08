@@ -156,7 +156,7 @@ export class ChatGPTApi implements LLMApi {
               } catch {}
 
               if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
+                responseTexts.push(Locale.Error.AccessCodeExpired);
               }
 
               if (extraInfo) {
@@ -241,7 +241,7 @@ export class ChatGPTApi implements LLMApi {
     ]);
 
     if (used.status === 401) {
-      throw new Error(Locale.Error.Unauthorized);
+      throw new Error(Locale.Error.AccessCodeExpired);
     }
 
     if (!used.ok || !subs.ok) {
