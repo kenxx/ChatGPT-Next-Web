@@ -69,6 +69,10 @@ export const useAccessStore = createPersistStore(
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
+      if (typeof process !== "undefined") {
+        console.log("passed by server");
+        return;
+      }
       fetch("/api/config", {
         method: "post",
         body: null,
@@ -81,8 +85,8 @@ export const useAccessStore = createPersistStore(
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));
         })
-        .catch(() => {
-          console.error("[Config] failed to fetch config");
+        .catch((err) => {
+          console.error("[Config] failed to fetch config", err);
         })
         .finally(() => {
           fetchState = 2;
