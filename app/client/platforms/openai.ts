@@ -157,6 +157,7 @@ export class ChatGPTApi implements LLMApi {
 
               if (res.status === 401) {
                 responseTexts.push(Locale.Error.AccessCodeExpired);
+                window.location.href = "/auth?login=1";
               }
 
               if (extraInfo) {
