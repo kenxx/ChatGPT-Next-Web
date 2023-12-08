@@ -45,7 +45,7 @@ async function handle(
     );
   }
 
-  const authResult = auth(req);
+  const authResult = await auth(req);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -74,7 +74,7 @@ async function handle(
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+// export const runtime = "edge";
 export const preferredRegion = [
   "arn1",
   "bom1",

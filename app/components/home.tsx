@@ -128,7 +128,8 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -182,13 +183,17 @@ export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+  const accessStore = useAccessStore();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
-  }, []);
+    if (!accessStore.isAuthorized()) {
+      window.location.href = "/auth";
+    }
+  }, [accessStore]);
 
-  if (!useHasHydrated()) {
+  if (!useHasHydrated() || !accessStore.isAuthorized()) {
     return <Loading />;
   }
 

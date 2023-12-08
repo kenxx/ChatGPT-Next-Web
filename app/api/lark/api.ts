@@ -1,4 +1,4 @@
-import { cacheAround } from "./redis";
+import { cacheAround } from "../redis";
 import { TenantAccessToken } from "./types";
 import { checkAPIError } from "./utils";
 
@@ -153,7 +153,6 @@ export async function getAuthenV1UserInfo(userAccessToken: string): Promise<{
   const res = await fetch(
     "https://open.feishu.cn/open-apis/authen/v1/user_info",
     {
-      method: "POST",
       headers: {
         Authorization: `Bearer ${userAccessToken}`,
       },

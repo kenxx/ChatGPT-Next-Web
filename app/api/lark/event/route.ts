@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { redis } from "../redis";
 import { createDecipheriv, createHash } from "crypto";
 
 const {

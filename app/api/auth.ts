@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
+import { getRedis } from "./redis";
 
 function getIP(req: NextRequest) {
   let ip = req.ip ?? req.headers.get("x-real-ip");
@@ -24,7 +25,7 @@ function parseApiKey(bearToken: string) {
   };
 }
 
-export function auth(req: NextRequest) {
+export async function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
@@ -39,11 +40,21 @@ export function auth(req: NextRequest) {
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
 
-  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !apiKey) {
-    return {
-      error: true,
-      msg: !accessCode ? "empty access code" : "wrong access code",
-    };
+  const hasAccessCodeInRedis =
+    (await getRedis().exists(`access_code:${accessCode}`)) == 1;
+
+  if (!hasAccessCodeInRedis) {
+    console.log(hasAccessCodeInRedis);
+    if (
+      serverConfig.needCode &&
+      !serverConfig.codes.has(hashedCode) &&
+      !apiKey
+    ) {
+      return {
+        error: true,
+        msg: !accessCode ? "empty access code" : "wrong access code",
+      };
+    }
   }
 
   if (serverConfig.hideUserApiKey && !!apiKey) {
@@ -74,5 +85,6 @@ export function auth(req: NextRequest) {
 
   return {
     error: false,
+    accessCode,
   };
 }

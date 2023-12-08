@@ -9,12 +9,11 @@ import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
-import { useLarkAuthorize } from "./lark";
+import { Loading } from "./home";
 
 export function AuthPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
-  const url = useLarkAuthorize(["contact:user.base:readonly"]);
 
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
@@ -26,12 +25,23 @@ export function AuthPage() {
   }; // Reset access code to empty string
 
   useEffect(() => {
-    console.log(url);
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
+
+    if (!accessStore.isAuthorized()) {
+      window.location.href = "/auth";
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!accessStore.isAuthorized()) {
+    return (
+      <div className={styles["auth-page"]}>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div className={styles["auth-page"]}>
@@ -41,7 +51,7 @@ export function AuthPage() {
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
       <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
-
+      {/* 
       <input
         className={styles["auth-input"]}
         type="password"
@@ -52,7 +62,7 @@ export function AuthPage() {
             (access) => (access.accessCode = e.currentTarget.value),
           );
         }}
-      />
+      /> */}
       {!accessStore.hideUserApiKey ? (
         <>
           <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
@@ -81,12 +91,6 @@ export function AuthPage() {
           onClick={() => {
             resetAccessCode();
             goHome();
-          }}
-        />
-        <IconButton
-          text={"Lark"}
-          onClick={() => {
-            window.location.href = url.toString();
           }}
         />
       </div>

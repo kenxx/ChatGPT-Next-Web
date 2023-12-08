@@ -1,14 +1,18 @@
 import { Redis } from "ioredis";
 
 const { REDIS_URL = "" } = process.env;
+const redis = new Redis(REDIS_URL);
 
-export const redis = new Redis(REDIS_URL);
+export function getRedis() {
+  return redis;
+}
 
 export async function cacheAround<T>(
   key: string,
   around: () => Promise<T>,
   expire?: number | string,
 ): Promise<T> {
+  const redis = getRedis();
   const cached = await redis.get(key);
   if (cached) {
     return JSON.parse(cached);

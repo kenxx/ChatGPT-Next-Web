@@ -44,7 +44,6 @@ export const useAccessStore = createPersistStore(
   (set, get) => ({
     enabledAccessControl() {
       this.fetch();
-
       return get().needCode;
     },
 
